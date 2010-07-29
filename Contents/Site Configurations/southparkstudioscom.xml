@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://www.southparkstudios.com/episodes"
+	plugin="http://media.mtvnservices.com/mgid.*southparkstudios.com"
+    manualLock="true"
+	initialState="wait-for-frame-load"
+	allowPopups="true"
+	version="1.0">
+
+	<crop x="0" y="0" width="768" height="432" />
+	<seekbar type="simple">
+		<start x="44" y="444" />
+		<end   x="644" y="444" />
+		<played>
+			<color rgb="ffcc00" />
+			<color rgb="ffffff" />
+		</played>
+	</seekbar>
+
+	<!-- WAIT FOR FRAME LOAD -->
+	<state name="wait-for-frame-load">
+		<event>
+			<condition>
+				 <frameLoaded />
+			</condition>
+			<action>
+				<goto state="check-episode" />
+			</action>
+		</event>
+	</state>
+
+	<!-- CHECK EPISODE -->
+	<state name="check-episode">
+		<event>
+			<condition>
+				<javascript script="(document.getElementsByTagName('object')[0]==null || document.getElementsByTagName('object')[0].id!='mtvnPlayer') ? 0 : 1" matches="1" />
+			</condition>
+			<action>
+				<lockPlugin />
+				<goto state="wait-for-play" />
+			</action>
+		</event>
+
+		<event>
+			<condition>
+				<javascript script="(document.getElementsByTagName('object')[0]==null || document.getElementsByTagName('object')[0].id!='mtvnPlayer') ? 0 : 1" matches="0" />
+			</condition>
+			<action>
+				<goto state="end" param="This episode is not available at the moment" />
+			</action>
+		</event>
+	</state>
+
+	<!-- WAIT FOR PLAY -->
+	<state name="wait-for-play">
+		<event>
+			<condition>
+				<color x="47" y="397" rgb="ffcc00" />
+			</condition>
+			<action>
+				<click x="10" y="10" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PLAYING -->
+	<state name="playing">
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="20" y="452" />
+				<goto state="paused" />
+			</action>
+		</event>
+
+		<!-- Video ends -->
+		<event>
+			<condition>
+				<color x="643" y="444" rgb="ffcc00" />
+			</condition>
+			<action>
+				<goto state="end" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
+			</condition>
+			<action>
+				<click x="20" y="452" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+</site>

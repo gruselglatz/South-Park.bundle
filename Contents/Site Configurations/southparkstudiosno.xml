@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://www.southparkstudios.no/episodes"
+	plugin="http://media.mtvnservices.com/mgid.*southparkstudios.no"
+	initialState="wait-for-play"
+	allowPopups="true"
+	version="1.0">
+
+	<crop x="0" y="0" width="768" height="432" />
+	<seekbar type="simple">
+		<start x="44" y="444" />
+		<end   x="644" y="444" />
+		<played>
+			<color rgb="ffcc00" />
+			<color rgb="ffffff" />
+		</played>
+	</seekbar>
+
+	<!-- WAIT FOR PLAY -->
+	<state name="wait-for-play">
+		<event>
+			<condition>
+				<color x="47" y="397" rgb="ffcc00" />
+			</condition>
+			<action>
+				<click x="10" y="10" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PLAYING -->
+	<state name="playing">
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="20" y="452" />
+				<goto state="paused" />
+			</action>
+		</event>
+
+		<!-- Video ends -->
+		<event>
+			<condition>
+				<url matches="feeds/as3player/skin/skin_endcap_ep_share_en" />
+			</condition>
+			<action>
+				<goto state="end" />
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
+			</condition>
+			<action>
+				<click x="20" y="452" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+</site>
