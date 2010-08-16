@@ -64,6 +64,9 @@ def MainMenu():
       title = F("SEASON", str(season))
       dir.Append(Function(DirectoryItem(Episodes, title=title, thumb=R(PLUGIN_ICON_DEFAULT)), title=title, season=str(season)))
 
+  if Prefs.Get('country') == 'United States':
+    dir.Append(WebVideoItem('http://www.southparkstudios.com/episodes/random.php', title=L("RANDOM_TITLE"), thumb=R(PLUGIN_ICON_DEFAULT)))
+
   dir.Append(PrefsItem(L("PREFERENCES"), thumb=R(PLUGIN_ICON_PREFS)))
   return dir
 
