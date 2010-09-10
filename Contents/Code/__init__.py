@@ -1,6 +1,4 @@
 from PMS import *
-from PMS.Objects import *
-from PMS.Shortcuts import *
 import re
 
 ####################################################################################################
@@ -9,16 +7,16 @@ PLUGIN_TITLE = 'South Park'
 PLUGIN_PREFIX = '/video/southpark'
 
 URLS = [
-  ['Denmark', 'DK', 'http://www.southparkstudios.dk', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Finland', 'FI', 'http://www.southparkstudios.fi', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Germany', 'DE', 'http://www.southpark.de', '%s/episodenguide/', '%s/episodenguide/staffel/%%s/'],
-  ['The Netherlands', 'NL', 'http://www.southpark.nl', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Norway', 'NO', 'http://www.southparkstudios.no', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Sweden', 'SE', 'http://www.southparkstudios.se', '%s/guide/', '%s/guide/season/%%s/'],
-  ['United States', 'US', 'http://www.southparkstudios.com', '%s/guide/', '%s/guide/?season=%%s']]
+  ['Denmark', 'http://www.southparkstudios.dk', '%s/guide/', '%s/guide/season/%%s/'],
+  ['Finland', 'http://www.southparkstudios.fi', '%s/guide/', '%s/guide/season/%%s/'],
+  ['Germany', 'http://www.southpark.de', '%s/episodenguide/', '%s/episodenguide/staffel/%%s/'],
+  ['Germany (with original audio)', 'http://www.southpark.de', '%s/episodenguide/', '%s/episodenguide/staffel/%%s/'],
+  ['The Netherlands', 'http://www.southpark.nl', '%s/guide/', '%s/guide/season/%%s/'],
+  ['Norway', 'http://www.southparkstudios.no', '%s/guide/', '%s/guide/season/%%s/'],
+  ['Sweden', 'http://www.southparkstudios.se', '%s/guide/', '%s/guide/season/%%s/'],
+  ['United States', 'http://www.southparkstudios.com', '%s/guide/', '%s/guide/?season=%%s']]
 
 THUMB_URL = 'http://southparkstudios-intl.mtvnimages.com/shared/sps/images/south_park/episode_thumbnails/s%se%s_480.jpg'
-CACHE_INTERVAL = 3600
 
 # Default artwork and icon(s)
 PLUGIN_ARTWORK = 'art-default.png'
@@ -39,24 +37,15 @@ def Start():
   MediaContainer.art = R(PLUGIN_ARTWORK)
 
   # Set the default cache time
-  HTTP.SetCacheTime(CACHE_INTERVAL)
+  HTTP.SetCacheTime(CACHE_1HOUR)
+  HTTP.SetHeader('User-agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.4) Gecko/20100611 Firefox/3.6.4')
 
 ###################################################################################################
-
-def CreatePrefs():
-  countries = ''
-  for country, geo, base_url, guide_url, seasonguide_url in URLS:
-    countries += country + '|'
-  Prefs.Add(id='country', type='enum', default=geolocate(), label=L("COUNTRY"), values=countries[:-1])
-  if geolocate() == 'Germany':
-    Prefs.Add(id='lang', type='enum', default='Deutsch', label='Sprache', values='Deutsch|Englisch')
-
-####################################################################################################
 
 def MainMenu():
   dir = MediaContainer(noCache=True)
 
-  if Prefs.Get('country'):
+  if Prefs.Get('country') != "" and Prefs.Get('country') != None:
     site = XML.ElementFromURL(getURLs()[1], isHTML=True, errors='ignore')
     numSeasons = len( site.xpath('//ol[@class="pagination"]/li') )
 
@@ -64,8 +53,8 @@ def MainMenu():
       title = F("SEASON", str(season))
       dir.Append(Function(DirectoryItem(Episodes, title=title, thumb=R(PLUGIN_ICON_DEFAULT)), title=title, season=str(season)))
 
-  if Prefs.Get('country') == 'United States':
-    dir.Append(WebVideoItem('http://www.southparkstudios.com/episodes/random.php', title=L("RANDOM_TITLE"), thumb=R(PLUGIN_ICON_DEFAULT)))
+    if Prefs.Get('country') == 'United States':
+      dir.Append(WebVideoItem('http://www.southparkstudios.com/episodes/random.php', title=L("RANDOM_TITLE"), thumb=R(PLUGIN_ICON_DEFAULT)))
 
   dir.Append(PrefsItem(L("PREFERENCES"), thumb=R(PLUGIN_ICON_PREFS)))
   return dir
@@ -87,7 +76,7 @@ def Episodes(sender, title, season):
     videopage = getURLs()[0] + episode.xpath('.//a[@class="watch_full_episode"]')[0].get('href')
 
     # Language option for the German website
-    if geolocate() == 'Germany' and Prefs.Get('lang') == 'Englisch':
+    if Prefs.Get('country') == 'Germany (with original audio)':
       videopage += '?lang=en'
 
     dir.Append(WebVideoItem(videopage, title=title, subtitle=F("EPISODE", numOnly), summary=summary, thumb=thumb))
@@ -98,15 +87,7 @@ def Episodes(sender, title, season):
 
 def getURLs():
   c = Prefs.Get('country')
-  for country, geo, base_url, guide_url, seasonguide_url in URLS:
+  Log( c )
+  for country, base_url, guide_url, seasonguide_url in URLS:
     if c == country:
       return [base_url, (guide_url % base_url), (seasonguide_url % base_url)]
-
-####################################################################################################
-
-def geolocate():
-  g = Locale.Geolocation()
-  for country, geo, base_url, guide_url, seasonguide_url in URLS:
-    if g == geo:
-      return country
-  return 'United States'
