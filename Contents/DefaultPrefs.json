@@ -1,0 +1,9 @@
+[
+  {
+    "id":"country",
+    "type":"enum",
+    "label":"Country",
+    "values":["Denmark", "Finland", "Germany", "Germany (with original audio)", "The Netherlands", "Norway", "Sweden", "United States"],
+    "default":""
+  }
+]
