@@ -1,50 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site site="http://www.southparkstudios.com/full-episodes"
+<site site="http://www.southparkstudios.com"
 	plugin="http://media.mtvnservices.com/mgid.*southparkstudios.com"
-	initialState="wait-for-frame-load"
-	allowPopups="true"
+	initialState="playing"
 	version="2.0">
 
 	<crop x="0" y="0" width="0" height="0" />
-
-	<!-- WAIT FOR FRAME LOAD -->
-	<state name="wait-for-frame-load">
-		<event>
-			<condition>
-				 <frameLoaded />
-			</condition>
-			<action>
-				<goto state="check-episode" />
-			</action>
-		</event>
-	</state>
-
-	<!-- CHECK EPISODE -->
-	<state name="check-episode">
-		<event>
-			<condition>
-				<javascript script="document.getElementsByTagName('object').length ? 0 : 1" matches="1" />
-			</condition>
-			<action>
-				<goto state="playing" />
-			</action>
-		</event>
-
-		<event>
-			<condition>
-				<javascript script="document.getElementsByTagName('object').length ? 0 : 1" matches="1" />
-			</condition>
-			<action>
-				<goto state="end" param="This episode is not available at the moment" />
-			</action>
-		</event>
-	</state>
 
 	<!-- PLAYING -->
 	<state name="playing">
 		<event>
 			<condition>
-				<javascript script="true ? 1 : 0" matches="1" />
+				<command name="pause" />
+			</condition>
+			<action>
+				<!-- Nothing to do -->
+			</action>
+		</event>
+	</state>
+
+	<!-- PAUSED -->
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
 			</condition>
 			<action>
 				<!-- Nothing to do -->
