@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site site="http://www.southparkstudios.no/episodes"
-	plugin="http://media.mtvnservices.com/mgid.*southparkstudios.no"
+<site site="http://www.southparkstudios.no"
+	plugin="http://media.mtvnservices.com.*southpark"
 	initialState="wait-for-play"
 	allowPopups="true"
 	version="1.0">

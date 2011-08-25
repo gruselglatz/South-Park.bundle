@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site site="http://www.southparkstudios.com"
-	plugin="http://media.mtvnservices.com/mgid.*southparkstudios.com"
+	plugin="http://media.mtvnservices.com.*southpark"
 	initialState="playing"
 	version="2.0">
 

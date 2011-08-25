@@ -1,37 +1,35 @@
 import re
 
 PLUGIN_TITLE = 'South Park'
-PLUGIN_PREFIX = '/video/southpark'
-
 URLS = [
-  ['Denmark', 'http://www.southparkstudios.dk', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Finland', 'http://www.southparkstudios.fi', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Germany', 'http://www.southpark.de', '%s/episodenguide/', '%s/episodenguide/staffel/%%s/'],
-  ['Germany (with original audio)', 'http://www.southpark.de', '%s/episodenguide/', '%s/episodenguide/staffel/%%s/'],
-  ['The Netherlands', 'http://www.southpark.nl', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Norway', 'http://www.southparkstudios.no', '%s/guide/', '%s/guide/season/%%s/'],
-  ['Sweden', 'http://www.southparkstudios.se', '%s/guide/', '%s/guide/season/%%s/'],
-  ['United States', 'http://www.southparkstudios.com', '%s/guide/episodes', '%s/guide/episodes/season-%%s']]
+  ['Denmark',						'http://www.southparkstudios.dk',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
+  ['Finland',						'http://www.southparkstudios.fi',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
+  ['Germany',						'http://de.southparkstudios.com',	'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
+  ['Germany (with original audio)', 'http://de.southparkstudios.com',	'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
+  ['The Netherlands', 				'http://www.southpark.nl',			'%s/guide/episodes/',	'%s/guide/episodes/season/%%s/'],
+  ['Norway', 						'http://www.southparkstudios.no',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
+  ['Sweden', 						'http://www.southparkstudios.se',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
+  ['United States', 				'http://www.southparkstudios.com',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s']
+]
 
 THUMB_URL = 'http://southparkstudios-intl.mtvnimages.com/shared/sps/images/south_park/episode_thumbnails/s%se%s_480.jpg'
-
-PLUGIN_ARTWORK = 'art-default.jpg'
-PLUGIN_ICON_DEFAULT = 'icon-default.png'
-PLUGIN_ICON_PREFS = 'icon-prefs.png'
+ART = 'art-default.jpg'
+ICON = 'icon-default.png'
+ICON_PREFS = 'icon-prefs.png'
 
 ####################################################################################################
 def Start():
-  Plugin.AddPrefixHandler(PLUGIN_PREFIX, MainMenu, PLUGIN_TITLE, PLUGIN_ICON_DEFAULT, PLUGIN_ARTWORK)
+  Plugin.AddPrefixHandler('/video/southpark', MainMenu, PLUGIN_TITLE, ICON, ART)
 
   Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
   Plugin.AddViewGroup('Details', viewMode='InfoList', mediaType='items')
 
   MediaContainer.title1 = PLUGIN_TITLE
   MediaContainer.viewGroup = 'List'
-  MediaContainer.art = R(PLUGIN_ARTWORK)
+  MediaContainer.art = R(ART)
 
   HTTP.CacheTime = CACHE_1HOUR
-  HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
+  HTTP.Headers['User-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:6.0) Gecko/20100101 Firefox/6.0'
 
   SetVolume()
 
@@ -41,17 +39,13 @@ def MainMenu():
 
   if Prefs['country'] != "" and Prefs['country'] != None:
     site = HTML.ElementFromURL(getURLs()[1], errors='ignore')
-
-    if Prefs['country'] == 'United States':
-      numSeasons = len( site.xpath('//span[contains(@class,"pagination")]/ol/li') )
-    else:
-      numSeasons = len( site.xpath('//ol[@class="pagination"]/li') )
+    numSeasons = len( site.xpath('//*[contains(@class,"pagination")]//li') )
 
     for season in range(1, numSeasons+1):
       title = F("SEASON", str(season))
-      dir.Append(Function(DirectoryItem(Episodes, title=title, thumb=R(PLUGIN_ICON_DEFAULT)), title=title, season=str(season)))
+      dir.Append(Function(DirectoryItem(Episodes, title=title, thumb=R(ICON)), title=title, season=str(season)))
 
-  dir.Append(PrefsItem(L("PREFERENCES"), thumb=R(PLUGIN_ICON_PREFS)))
+  dir.Append(PrefsItem(L("PREFERENCES"), thumb=R(ICON_PREFS)))
   return dir
 
 ####################################################################################################
