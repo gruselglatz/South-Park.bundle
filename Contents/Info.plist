@@ -24,5 +24,15 @@
 	<array>
 		<string>Flash</string>
 	</array>
+	<key>PlexPluginRegions</key>
+	<array>
+		<string>DK</string>
+		<string>FI</string>
+		<string>DE</string>
+		<string>NL</string>
+		<string>NO</string>
+		<string>SE</string>
+		<string>US</string>
+	</array>
 </dict>
 </plist>
