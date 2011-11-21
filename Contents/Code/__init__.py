@@ -4,8 +4,8 @@ PLUGIN_TITLE = 'South Park'
 URLS = [
   ['Denmark',						'http://www.southparkstudios.dk',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
   ['Finland',						'http://www.southparkstudios.fi',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
-  ['Germany',						'http://de.southparkstudios.com',	'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
-  ['Germany (with original audio)', 'http://de.southparkstudios.com',	'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
+  ['Germany',						'http://www.southpark.de',			'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
+  ['Germany (with original audio)', 'http://www.southpark.de',			'%s/guide/episoden/',	'%s/guide/episoden/staffel/%%s/'],
   ['The Netherlands', 				'http://www.southpark.nl',			'%s/guide/episodes/',	'%s/guide/episodes/season/%%s/'],
   ['Norway', 						'http://www.southparkstudios.no',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
   ['Sweden', 						'http://www.southparkstudios.se',	'%s/guide/episodes/',	'%s/guide/episodes/season-%%s'],
