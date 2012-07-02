@@ -33,7 +33,9 @@ def MainMenu():
     if Prefs['country'] != "" and Prefs['country'] != None:
 	site = HTML.ElementFromURL(getURLs()[1], errors='ignore')
 	numSeasons = len( site.xpath('//*[contains(@class,"pagination")]//li') )
-
+	url = GetRandom()
+	oc.add(VideoClipObject(url=url, title=L('RANDOM_TITLE'), thumb=R(ICON)))
+	
 	for season in range(1, numSeasons+1):
 	    title = F("SEASON", str(season))
 	    oc.add(DirectoryObject(key=Callback(Episodes, title=title, season=str(season)), title=title))
@@ -71,6 +73,15 @@ def getURLs():
     for country, base_url, guide_url, seasonguide_url in URLS:
 	if Prefs['country'] == country:
 	    return [base_url, (guide_url % base_url), (seasonguide_url % base_url)]
+
+###################################################################################################
+def GetRandom():
+    try:
+	content = HTTP.Request(getURLs()[0]+'/full-episodes/random', follow_redirects=False, cacheTime=0).content
+    except Ex.RedirectError, e:
+	if e.headers.has_key('Location'):
+	    redirect_url = e.headers['Location']
+    return redirect_url
 
 ###################################################################################################
 #def SetVolume():
