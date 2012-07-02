@@ -1,6 +1,7 @@
 {
 	"SEASON"			: "Seizoen %s",
 	"EPISODE"			: "Aflevering %s",
-	"PREFERENCES"		: "Instellingen",
-	"COUNTRY"			: "Land"
+	"PREFERENCES"			: "Instellingen",
+	"COUNTRY"			: "Land",
+	"RANDOM_TITLE"			: "Random Episode"
 }
