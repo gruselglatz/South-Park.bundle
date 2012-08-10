@@ -1,7 +1,7 @@
 {
-	"SEASON"			: "Säsong %s",
-	"EPISODE"			: "Avsnitt %s",
-	"PREFERENCES"			: "Inställningar",
-	"COUNTRY"			: "Land",
-	"RANDOM_TITLE"			: "Slumpmässig episod"
+	"SEASON"		: "Säsong %s",
+	"EPISODE"		: "Avsnitt %s",
+	"PREFERENCES"	: "Inställningar",
+	"COUNTRY"		: "Land",
+	"RANDOM_TITLE"	: "Slumpmässig episod"
 }

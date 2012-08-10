@@ -1,7 +1,7 @@
 {
-	"SEASON"			: "Staffel %s",
-	"EPISODE"			: "Folge %s",
-	"PREFERENCES"			: "Einstellungen",
-	"COUNTRY"			: "Land",
-	"RANDOM_TITLE"			: "Zufällige Folge"
+	"SEASON"		: "Staffel %s",
+	"EPISODE"		: "Folge %s",
+	"PREFERENCES"	: "Einstellungen",
+	"COUNTRY"		: "Land",
+	"RANDOM_TITLE"	: "Zuf√§llige Folge"
 }

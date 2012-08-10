@@ -23,9 +23,9 @@
 	</array>
 	<key>PlexPluginRegions</key>
 	<array>
+		<string>DE</string>
 		<string>DK</string>
 		<string>FI</string>
-		<string>DE</string>
 		<string>NL</string>
 		<string>NO</string>
 		<string>SE</string>

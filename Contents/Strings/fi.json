@@ -1,7 +1,7 @@
 {
-	"SEASON"			: "%s. Tuotantokausi",
-	"EPISODE"			: "%s. Jakso",
-	"PREFERENCES"			: "Asetukset",
-	"COUNTRY"			: "Maa",
-	"RANDOM_TITLE"			: "Random episodi"
+	"SEASON"		: "%s. Tuotantokausi",
+	"EPISODE"		: "%s. Jakso",
+	"PREFERENCES"	: "Asetukset",
+	"COUNTRY"		: "Maa",
+	"RANDOM_TITLE"	: "Random episodi"
 }
