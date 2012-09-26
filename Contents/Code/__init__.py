@@ -106,7 +106,7 @@ def Episodes(title, season):
 			title = episode.xpath('.//span[@class="title eptitle"]')[0].text.strip()
 			summary = episode.xpath('.//span[@class="epdesc"]')[0].text.strip()
 			thumb = THUMB_URL % (season.zfill(2), num_only.zfill(2))
-			url = episode.xpath('.//a[@class="watch_full_episode"]')[0].get('href')
+			url = unicode(episode.xpath('.//a[@class="watch_full_episode"]')[0].get('href'))
 
 			if url[0:4] != 'http':
 				url = '%s%s' % (URLS[key]['base_url'], url)
@@ -134,4 +134,4 @@ def RandomEpisode():
 			if url[0:4] != 'http':
 				url = '%s%s' % (URLS[key]['base_url'], url)
 
-			return url
+			return unicode(url)
