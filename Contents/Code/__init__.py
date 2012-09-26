@@ -20,19 +20,19 @@ URLS = {
 	'Germany': {
 		'base_url':			'http://www.southpark.de',
 		'guide_url':		'http://www.southpark.de/guide/episoden/',
-		'seasonguide_url':	'http://www.southpark.de/guide/episoden/staffel/%s/',
+		'seasonguide_url':	'http://www.southpark.de/guide/episoden/staffel-%s',
 		'random_url':		'http://www.southpark.de/alle-episoden/random'
 	},
 	'Germany (with original audio)': {
 		'base_url':			'http://www.southpark.de',
 		'guide_url':		'http://www.southpark.de/guide/episoden/',
-		'seasonguide_url':	'http://www.southpark.de/guide/episoden/staffel/%s/',
+		'seasonguide_url':	'http://www.southpark.de/guide/episoden/staffel-%s',
 		'random_url':		'http://www.southpark.de/alle-episoden/random'
 	},
 	'The Netherlands': {
 		'base_url':			'http://www.southpark.nl',
 		'guide_url':		'http://www.southpark.nl/guide/episodes/',
-		'seasonguide_url':	'http://www.southpark.nl/guide/episodes/season/%s',
+		'seasonguide_url':	'http://www.southpark.nl/guide/episodes/season-%s',
 		'random_url':		'http://www.southpark.nl/full-episodes/random'
 	},
 	'Norway': {
