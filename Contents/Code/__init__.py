@@ -1,8 +1,5 @@
 NAME = 'South Park'
-THUMB_URL = 'http://southparkstudios-intl.mtvnimages.com/shared/sps/images/south_park/episode_thumbnails/s%se%s_480.jpg'
-ART = 'art-default.jpg'
-ICON = 'icon-default.png'
-ICON_PREFS = 'icon-prefs.png'
+THUMB_URL = 'http://southparkstudios.mtvnimages.com/images/south_park/episode_thumbnails/s%se%s_480.jpg'
 
 URLS = {
 	'Denmark': {
@@ -58,16 +55,12 @@ URLS = {
 ####################################################################################################
 def Start():
 
-	Plugin.AddPrefixHandler('/video/southpark', MainMenu, NAME, ICON, ART)
-
-	ObjectContainer.art = R(ART)
 	ObjectContainer.title1 = NAME
-	DirectoryObject.thumb = R(ICON)
-
 	HTTP.CacheTime = CACHE_1HOUR
-	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:14.0) Gecko/20100101 Firefox/14.0.1'
+	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:19.0) Gecko/20100101 Firefox/19.0'
 
 ###################################################################################################
+@handler('/video/southpark', NAME)
 def MainMenu():
 
 	oc = ObjectContainer(no_cache=True)
@@ -75,17 +68,22 @@ def MainMenu():
 	if Prefs['country'] != "" and Prefs['country'] is not None:
 		key = Prefs['country']
 
-		random_url = RandomEpisode()
-		oc.add(VideoClipObject(url=random_url, title=L('RANDOM_TITLE'), thumb=R(ICON)))
+		oc.add(VideoClipObject(
+			url = RandomEpisode(),
+			title = L('RANDOM_TITLE')
+		))
 
 		guide_url = HTML.ElementFromURL(URLS[key]['guide_url'])
 		num_seasons = len(guide_url.xpath('//*[contains(@class,"pagination")]//li'))
 
 		for season in range(1, num_seasons+1):
 			title = F("SEASON", str(season))
-			oc.add(DirectoryObject(key=Callback(Episodes, title=title, season=str(season)), title=title))
+			oc.add(DirectoryObject(
+				key = Callback(Episodes, title=title, season=str(season)),
+				title = title
+			))
 
-	oc.add(PrefsObject(title=L("PREFERENCES"), thumb=R(ICON_PREFS)))
+	oc.add(PrefsObject(title=L("PREFERENCES")))
 
 	return oc
 
@@ -115,7 +113,15 @@ def Episodes(title, season):
 		if Prefs['country'] == 'Germany (with original audio)':
 			url = '%s%s' % (url, '?lang=en')
 
-		oc.add(EpisodeObject(url=url, title=title, show=NAME, season=int(season), index=int(num_only), summary=summary, thumb=thumb))
+		oc.add(EpisodeObject(
+			url = url,
+			title = title,
+			show = NAME,
+			season = int(season),
+			index = int(num_only),
+			summary = summary,
+			thumb = Resource.ContentsOfURLWithFallback(thumb)
+		))
 
 	return oc
 
