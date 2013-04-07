@@ -88,6 +88,7 @@ def MainMenu():
 	return oc
 
 ####################################################################################################
+@route('/video/southpark/episodes')
 def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
@@ -126,6 +127,7 @@ def Episodes(title, season):
 	return oc
 
 ###################################################################################################
+@route('/video/southpark/episodes/random')
 def RandomEpisode():
 
 	key = Prefs['country']
