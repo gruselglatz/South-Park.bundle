@@ -7,7 +7,7 @@
 	<key>PlexClientPlatformExclusions</key>
 	<string>Roku</string>
 	<key>PlexClientPlatforms</key>
-	<string>MacOSX,Linux,Windows,iOS,Roku,LGTV,Chrome,Firefox,Safari</string>
+	<string>MacOSX,Linux,Windows,iOS,Roku,LGTV,Samsung,Chrome,Firefox,Safari</string>
 	<key>PlexFrameworkVersion</key>
 	<string>2</string>
 	<key>PlexPluginRegions</key>
