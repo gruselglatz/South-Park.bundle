@@ -2,8 +2,9 @@ NAME = 'South Park'
 THUMB_URL = 'http://southparkstudios.mtvnimages.com/images/south_park/episode_thumbnails/s%se%s_480.jpg'
 
 BASE_URL = 'http://www.southparkstudios.com'
-GUIDE_URL = 'http://www.southparkstudios.com/guide/episodes/'
-SEASONGUIDE_URL = 'http://www.southparkstudios.com/guide/episodes/season-%s'
+GUIDE_URL = 'http://www.southparkstudios.com/full-episodes'
+SEASON_URL = 'http://www.southparkstudios.com/full-episodes/season-%s'
+SEASON_JSON_URL = 'http://www.southparkstudios.com/feeds/carousel/video/%s/100/1/json'
 RANDOM_URL = 'http://www.southparkstudios.com/full-episodes/random'
 
 ####################################################################################################
@@ -11,7 +12,7 @@ def Start():
 
 	ObjectContainer.title1 = NAME
 	HTTP.CacheTime = CACHE_1HOUR
-	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0'
+	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20100101 Firefox/23.0'
 
 ###################################################################################################
 @handler('/video/southpark', NAME)
@@ -24,7 +25,7 @@ def MainMenu():
 		title = L('RANDOM_TITLE')
 	))
 
-	num_seasons = len(HTML.ElementFromURL(GUIDE_URL).xpath('//*[contains(@class,"pagination")]//li'))
+	num_seasons = len(HTML.ElementFromURL(GUIDE_URL).xpath('//span[@data-value]/a[contains(@href, "full-episodes/season-")]'))
 
 	for season in range(1, num_seasons+1):
 		title = F("SEASON", str(season))
@@ -40,36 +41,32 @@ def MainMenu():
 def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
-	available_episodes = HTML.ElementFromURL(SEASONGUIDE_URL % season).xpath('//ul[@id="grid_index"]/li[@class="grid_item"]')
+	season_uuid = HTML.ElementFromURL(SEASON_URL % season).xpath('//section[@class="module carousel"]/@data-url')[0].split('/video/')[-1].split('/')[0]
 
-	for episode in available_episodes:
-		if not episode.xpath('.//a[@class="watch_full_episode"]'):
-			continue
-
-		ep_number = episode.xpath('.//span[@class="epnumber"]')[0].text.replace('Episode: ', '')
-		num_only = ep_number.replace(season, '', 1)
-		num_only = num_only.lstrip('0')
-		title = episode.xpath('.//span[@class="title eptitle"]')[0].text.strip()
-		summary = episode.xpath('.//span[@class="epdesc"]')[0].text.strip()
-		thumb = THUMB_URL % (season.zfill(2), num_only.zfill(2))
-		url = unicode(episode.xpath('.//a[@class="watch_full_episode"]')[0].get('href'))
-
-		if url[0:4] != 'http':
-			url = '%s%s' % (BASE_URL, url)
+	for episode in JSON.ObjectFromURL(SEASON_JSON_URL % season_uuid):
+		url = unicode(episode['url'])
+		title = episode['title']
+		summary = episode['description']
+		originally_available_at = Datetime.FromTimestamp(float(episode['originalAirDate']))
+		season = episode['episodeNumber'][:2]
+		index = episode['episodeNumber'][2:]
+		thumb = episode['images']
 
 		oc.add(EpisodeObject(
 			url = url,
-			title = title,
 			show = NAME,
-			season = int(season),
-			index = int(num_only),
+			title = title,
 			summary = summary,
+			originally_available_at = originally_available_at,
+			season = int(season),
+			index = int(index),
 			thumb = Resource.ContentsOfURLWithFallback(thumb)
 		))
 
 	if len(oc) < 1:
 		return ObjectContainer(header="Empty", message="This season doesn't contain any episodes.")
 	else:
+		oc.objects.sort(key = lambda obj: obj.index)
 		return oc
 
 ###################################################################################################
