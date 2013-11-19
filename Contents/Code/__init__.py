@@ -1,10 +1,7 @@
 NAME = 'South Park'
-THUMB_URL = 'http://southparkstudios.mtvnimages.com/images/south_park/episode_thumbnails/s%se%s_480.jpg'
-
 BASE_URL = 'http://www.southparkstudios.com'
 GUIDE_URL = 'http://www.southparkstudios.com/full-episodes'
-SEASON_URL = 'http://www.southparkstudios.com/full-episodes/season-%s'
-SEASON_JSON_URL = 'http://www.southparkstudios.com/feeds/carousel/video/%s/100/1/json'
+SEASON_JSON_URL = 'http://www.southparkstudios.com/feeds/full-episode/carousel/%s/dc400305-d548-4c30-8f05-0f27dc7e0d5c' # season
 RANDOM_URL = 'http://www.southparkstudios.com/full-episodes/random'
 
 ####################################################################################################
@@ -25,7 +22,7 @@ def MainMenu():
 		title = L('RANDOM_TITLE')
 	))
 
-	num_seasons = len(HTML.ElementFromURL(GUIDE_URL).xpath('//span[@data-value]/a[contains(@href, "full-episodes/season-")]'))
+	num_seasons = len(HTML.ElementFromURL(GUIDE_URL).xpath('//li/a[contains(@href, "full-episodes/season-")]'))
 
 	for season in range(1, num_seasons+1):
 		title = F("SEASON", str(season))
@@ -41,16 +38,18 @@ def MainMenu():
 def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
-	season_uuid = HTML.ElementFromURL(SEASON_URL % season).xpath('//section[@class="module carousel"]/@data-url')[0].split('/video/')[-1].split('/')[0]
 
-	for episode in JSON.ObjectFromURL(SEASON_JSON_URL % season_uuid):
+	for episode in JSON.ObjectFromURL(SEASON_JSON_URL % season)['season']['episode']:
+
+		if episode['available'] != 'true':
+			continue
+
 		url = unicode(episode['url'])
 		title = episode['title']
 		summary = episode['description']
-		originally_available_at = Datetime.FromTimestamp(float(episode['originalAirDate']))
-		season = episode['episodeNumber'][:2]
-		index = episode['episodeNumber'][2:]
-		thumb = episode['images']
+		originally_available_at = Datetime.ParseDate(episode['airdate'])
+		index = episode['episodenumber'][-2:]
+		thumb = episode['thumbnail'].split('?')[0]
 
 		oc.add(EpisodeObject(
 			url = url,
