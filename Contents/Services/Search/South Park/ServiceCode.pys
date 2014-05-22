@@ -1,0 +1,23 @@
+SEARCH_URL = 'http://www.southparkstudios.com/feeds/typeahead/json/?q=%s'
+
+####################################################################################################
+def Search(query):
+
+	oc = ObjectContainer(title1='South Park', title2='Search Results')
+	url = SEARCH_URL % String.Quote(query)
+
+	json = HTTP.Request(url, cacheTime=CACHE_1HOUR).content.strip()
+	json_obj = JSON.ObjectFromString(json)
+
+	for result in json_obj['results']:
+
+		if result['info'] != 'Episode':
+			continue
+
+		url = result['id'].replace('/guide/episodes/', '/full-episodes/')
+
+		oc.add(
+			URLService.MetadataObjectForURL(url)
+		)
+
+	return oc
