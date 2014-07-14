@@ -50,7 +50,7 @@ def Episodes(title, season):
 	oc = ObjectContainer(title2=title)
 
 	pageElement = HTML.ElementFromURL(GUIDE_URL)
-	
+
 	for episode_data in pageElement.xpath("//*[@data-view='carousel']//*[@data-sort-value=" + season + "]//*[@class='thumb ']"):
 		url = episode_data.xpath(".//a/@href")[0]
 
@@ -58,19 +58,20 @@ def Episodes(title, season):
 			index = int(RE_SEASON_EPISODE.search(url).groups()[1])
 		except:
 			continue
-			
+
 		title = episode_data.xpath(".//*[@class='title']/text()")[0].strip()
 		summary = episode_data.xpath(".//*[@class='episode']/text()")[0].strip()
 		thumb = RE_IMAGE_URL.search(episode_data.xpath(".//a/@style")[0]).groups()[0]
-		
+
 		oc.add(
 			EpisodeObject(
 				url = url,
+				show = NAME,
 				title = title,
 				summary = summary,
 				index = index,
 				season = int(season),
-				thumb = thumb
+				thumb = Resource.ContentsOfURLWithFallback(thumb)
 			)
 		)
 
