@@ -1,8 +1,10 @@
 NAME = 'South Park'
-BASE_URL = 'http://www.southparkstudios.com'
-GUIDE_URL = 'http://www.southparkstudios.com/full-episodes'
-SEASON_JSON_URL = 'http://www.southparkstudios.com/feeds/full-episode/carousel/%s/dc400305-d548-4c30-8f05-0f27dc7e0d5c' # season
-RANDOM_URL = 'http://www.southparkstudios.com/full-episodes/random'
+BASE_URL = 'http://southpark.cc.com'
+GUIDE_URL = BASE_URL + '/full-episodes'
+RANDOM_URL = BASE_URL + '/full-episodes/random'
+
+RE_SEASON_EPISODE = Regex('full-episodes\/s([0-9]+)e([0-9]+)')
+RE_IMAGE_URL = Regex("background-image:url\('(.*\.jpg)")
 
 ####################################################################################################
 def Start():
@@ -17,21 +19,27 @@ def MainMenu():
 
 	oc = ObjectContainer(no_cache=True)
 
-	oc.add(VideoClipObject(
-		url = RandomEpisode(),
-		title = L('RANDOM_TITLE')
-	))
+	oc.add(
+		VideoClipObject(
+			url = RandomEpisode(),
+			title = L('RANDOM_TITLE')
+		)
+	)
 
-	num_seasons = len(HTML.ElementFromURL(GUIDE_URL).xpath('//li/a[contains(@href, "full-episodes/season-")]'))
+	num_seasons = int(HTML.ElementFromURL(GUIDE_URL).xpath('//span[contains(@class, "active seasonFilter")]/@data-value')[0])
 
 	for season in range(1, num_seasons+1):
 		title = F("SEASON", str(season))
-		oc.add(DirectoryObject(
-			key = Callback(Episodes, title=title, season=str(season)),
-			title = title
-		))
+		oc.add(
+			DirectoryObject(
+				key = Callback(Episodes, title=title, season=str(season)),
+				title = title
+			)
+		)
 
-	oc.add(SearchDirectoryObject(identifier='com.plexapp.plugins.southpark', title=L('Search'), prompt=L('Search Episodes'), term=L('videos')))
+	oc.add(
+		SearchDirectoryObject(identifier='com.plexapp.plugins.southpark', title=L('Search'), prompt=L('Search Episodes'), term=L('videos'))
+	)
 
 	return oc
 
@@ -41,28 +49,30 @@ def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
 
-	for episode in JSON.ObjectFromURL(SEASON_JSON_URL % season)['season']['episode']:
+	pageElement = HTML.ElementFromURL(GUIDE_URL)
+	
+	for episode_data in pageElement.xpath("//*[@data-view='carousel']//*[@data-sort-value=" + season + "]//*[@class='thumb ']"):
+		url = episode_data.xpath(".//a/@href")[0]
 
-		if episode['available'] != 'true':
+		try:
+			index = int(RE_SEASON_EPISODE.search(url).groups()[1])
+		except:
 			continue
-
-		url = unicode(episode['url'])
-		title = episode['title']
-		summary = episode['description']
-		originally_available_at = Datetime.ParseDate(episode['airdate'])
-		index = episode['episodenumber'][-2:]
-		thumb = episode['thumbnail'].split('?')[0]
-
-		oc.add(EpisodeObject(
-			url = url,
-			show = NAME,
-			title = title,
-			summary = summary,
-			originally_available_at = originally_available_at,
-			season = int(season),
-			index = int(index),
-			thumb = Resource.ContentsOfURLWithFallback(thumb)
-		))
+			
+		title = episode_data.xpath(".//*[@class='title']/text()")[0].strip()
+		summary = episode_data.xpath(".//*[@class='episode']/text()")[0].strip()
+		thumb = RE_IMAGE_URL.search(episode_data.xpath(".//a/@style")[0]).groups()[0]
+		
+		oc.add(
+			EpisodeObject(
+				url = url,
+				title = title,
+				summary = summary,
+				index = index,
+				season = int(season),
+				thumb = thumb
+			)
+		)
 
 	if len(oc) < 1:
 		return ObjectContainer(header="Empty", message="This season doesn't contain any episodes.")
