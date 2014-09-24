@@ -1,17 +1,16 @@
 NAME = 'South Park'
 BASE_URL = 'http://southpark.cc.com'
-GUIDE_URL = BASE_URL + '/full-episodes'
-RANDOM_URL = BASE_URL + '/full-episodes/random'
+GUIDE_URL = '%s/full-episodes' % (BASE_URL)
+RANDOM_URL = '%s/full-episodes/random' % (BASE_URL)
 
 RE_SEASON_EPISODE = Regex('full-episodes\/s([0-9]+)e([0-9]+)')
-RE_IMAGE_URL = Regex("background-image:url\('(.*\.jpg)")
 
 ####################################################################################################
 def Start():
 
 	ObjectContainer.title1 = NAME
 	HTTP.CacheTime = CACHE_1HOUR
-	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36'
+	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'
 
 ###################################################################################################
 @handler('/video/southpark', NAME)
@@ -26,9 +25,9 @@ def MainMenu():
 		)
 	)
 
-	num_seasons = int(HTML.ElementFromURL(GUIDE_URL).xpath('//span[contains(@class, "active seasonFilter")]/@data-value')[0])
+	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//span[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
 
-	for season in range(1, num_seasons+1):
+	for season in range(1, int(num_seasons)+1):
 		title = F("SEASON", str(season))
 		oc.add(
 			DirectoryObject(
@@ -48,20 +47,32 @@ def MainMenu():
 def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
+	html = HTML.ElementFromURL('%s/season-%s?sort=!airdate' % (GUIDE_URL, season))
 
-	pageElement = HTML.ElementFromURL(GUIDE_URL)
+	json_url = html.xpath('//section[@data-url]/@data-url')[0]
+	json_url = json_url.replace('{resultsPerPage}', '30')
+	json_url = json_url.replace('{currentPage}', '1')
+	json_url = json_url.replace('{sort}', '!airdate')
+	json_url = json_url.replace('{relatedItemId}', 'season-%s' % (season))
 
-	for episode_data in pageElement.xpath("//*[@data-view='carousel']//*[@data-sort-value=" + season + "]//*[@class='thumb ']"):
-		url = episode_data.xpath(".//a/@href")[0]
+	json_obj = JSON.ObjectFromURL('%s%s' % (BASE_URL, json_url))
+
+	for episode in json_obj['results']:
+
+		url = episode['_url']['default'].split('#')[0]
 
 		try:
-			index = int(RE_SEASON_EPISODE.search(url).groups()[1])
+			index = int(RE_SEASON_EPISODE.search(url).group(2))
 		except:
 			continue
 
-		title = episode_data.xpath(".//*[@class='title']/text()")[0].strip()
-		summary = episode_data.xpath(".//*[@class='episode']/text()")[0].strip()
-		thumb = RE_IMAGE_URL.search(episode_data.xpath(".//a/@style")[0]).groups()[0]
+		title = episode['title']
+		summary = episode['description']
+
+		if title == 'TBD' or summary.startswith('This episode airs '):
+			continue
+
+		thumb = episode['images']
 
 		oc.add(
 			EpisodeObject(

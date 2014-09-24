@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.plexapp.plugins.southpark</string>
-	<key>PlexClientPlatforms</key>
-	<string>MacOSX,Linux,Windows,Windows Phone,iOS,Roku,LGTV,Samsung,Chrome,Firefox,Safari</string>
 	<key>PlexFrameworkVersion</key>
 	<string>2</string>
 	<key>PlexPluginRegions</key>
