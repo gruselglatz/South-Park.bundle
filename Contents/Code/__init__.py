@@ -36,10 +36,6 @@ def MainMenu():
 			)
 		)
 
-	oc.add(
-		SearchDirectoryObject(identifier='com.plexapp.plugins.southpark', title=L('Search'), prompt=L('Search Episodes'), term=L('videos'))
-	)
-
 	return oc
 
 ####################################################################################################
