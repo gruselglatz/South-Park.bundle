@@ -59,6 +59,9 @@ def Episodes(title, season):
 
 	for episode in json_obj['results']:
 
+		if episode['_availability'] == 'beforepremiere':
+			continue
+
 		url = episode['_url']['default'].split('#')[0]
 
 		try:
@@ -78,7 +81,7 @@ def Episodes(title, season):
 			EpisodeObject(
 				url = url,
 				show = NAME,
-				title = title,
+				title = '%sx%d %s' % (season, index, title),
 				summary = summary,
 				index = index,
 				season = int(season),
