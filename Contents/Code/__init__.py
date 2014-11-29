@@ -21,7 +21,6 @@ def MainMenu():
 	if Client.Platform in ('Android'):
 		oc.header = 'Not compatible'
 		oc.message = 'This channel is not compatible with Android clients.'
-		return oc
 
 	oc.add(
 		VideoClipObject(
