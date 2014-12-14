@@ -29,7 +29,7 @@ def MainMenu():
 		)
 	)
 
-	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//span[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
+	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//*[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
 
 	for season in range(1, int(num_seasons)+1):
 		title = F("SEASON", str(season))
