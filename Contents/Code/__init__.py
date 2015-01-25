@@ -18,7 +18,7 @@ def MainMenu():
 
 	oc = ObjectContainer(no_cache=True)
 
-	if Client.Platform in ('Android'):
+	if Client.Platform in ['Android']:
 		oc.header = 'Not compatible'
 		oc.message = 'This channel is not compatible with Android clients.'
 
