@@ -96,7 +96,7 @@ def Episodes(title, season):
 def RandomEpisode():
 
 	try:
-		page = HTTP.Request(RANDOM_URL, follow_redirects=False).content
+		page = HTTP.Request(RANDOM_URL, cacheTime=0, follow_redirects=False).content
 	except Ex.RedirectError, e:
 		if 'Location' in e.headers:
 			url = e.headers['Location']
