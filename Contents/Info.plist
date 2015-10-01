@@ -8,12 +8,6 @@
 	<string>2</string>
 	<key>PlexPluginRegions</key>
 	<array>
-		<string>DE</string>
-		<string>DK</string>
-		<string>FI</string>
-		<string>NL</string>
-		<string>NO</string>
-		<string>SE</string>
 		<string>US</string>
 	</array>
 </dict>
