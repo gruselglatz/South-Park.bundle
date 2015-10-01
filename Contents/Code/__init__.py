@@ -1,7 +1,6 @@
 NAME = 'South Park'
 BASE_URL = 'http://southpark.cc.com'
 GUIDE_URL = '%s/full-episodes' % (BASE_URL)
-RANDOM_URL = '%s/full-episodes/random' % (BASE_URL)
 
 RE_SEASON_EPISODE = Regex('full-episodes\/s([0-9]+)e([0-9]+)')
 
@@ -17,14 +16,6 @@ def Start():
 def MainMenu():
 
 	oc = ObjectContainer(no_cache=True)
-
-	oc.add(
-		VideoClipObject(
-			url = RandomEpisode(),
-			title = L('RANDOM_TITLE')
-		)
-	)
-
 	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//*[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
 
 	for season in range(1, int(num_seasons)+1):
@@ -90,18 +81,3 @@ def Episodes(title, season):
 	else:
 		oc.objects.sort(key = lambda obj: obj.index)
 		return oc
-
-###################################################################################################
-@route('/video/southpark/episodes/random')
-def RandomEpisode():
-
-	try:
-		page = HTTP.Request(RANDOM_URL, cacheTime=0, follow_redirects=False).content
-	except Ex.RedirectError, e:
-		if 'Location' in e.headers:
-			url = e.headers['Location']
-
-			if url[0:4] != 'http':
-				url = '%s%s' % (BASE_URL, url)
-
-			return unicode(url)
