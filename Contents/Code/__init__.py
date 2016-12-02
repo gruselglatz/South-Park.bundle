@@ -49,7 +49,7 @@ def Episodes(title, season):
 
 	for episode in json_obj['results']:
 
-		if episode['_availability'] == 'beforepremiere':
+		if episode['_availability'] != 'true':
 			continue
 
 		url = episode['_url']['default'].split('#')[0]
