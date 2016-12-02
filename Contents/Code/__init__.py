@@ -1,4 +1,6 @@
 NAME = 'South Park'
+ART = 'art-default.jpg'
+ICON = 'icon-default.jpg'
 BASE_URL = 'http://southpark.cc.com'
 GUIDE_URL = '%s/full-episodes' % (BASE_URL)
 
@@ -12,7 +14,7 @@ def Start():
 	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'
 
 ###################################################################################################
-@handler('/video/southpark', NAME)
+@handler('/video/southpark', NAME, art=ART, thumb=ICON)
 def MainMenu():
 
 	oc = ObjectContainer()
