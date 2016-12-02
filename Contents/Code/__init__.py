@@ -18,8 +18,9 @@ def MainMenu():
 	oc = ObjectContainer()
 	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//*[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
 
-	for season in range(1, int(num_seasons)+1):
-		title = F("SEASON", str(season))
+	for season in reversed(range(1, int(num_seasons)+1)):
+
+		title = 'Season %s' % (str(season))
 		oc.add(
 			DirectoryObject(
 				key = Callback(Episodes, title=title, season=str(season)),
