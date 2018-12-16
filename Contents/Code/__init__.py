@@ -1,10 +1,10 @@
 NAME = 'South Park'
 ART = 'art-default.jpg'
 ICON = 'icon-default.jpg'
-BASE_URL = 'http://southpark.cc.com'
-GUIDE_URL = '%s/full-episodes' % (BASE_URL)
+BASE_URL = 'http://www.southpark.de'
+GUIDE_URL = '%s/alle-episoden' % (BASE_URL)
 
-RE_SEASON_EPISODE = Regex('full-episodes\/s([0-9]+)e([0-9]+)')
+RE_SEASON_EPISODE = Regex('alle-episoden\/s([0-9]+)e([0-9]+)')
 
 ####################################################################################################
 def Start():
@@ -19,7 +19,7 @@ def MainMenu():
 
 	oc = ObjectContainer()
 	num_seasons = HTML.ElementFromURL(GUIDE_URL).xpath('//*[contains(@data-value, "season-")]/@data-value')[-1].split('-')[-1]
-
+	
 	for season in reversed(range(1, int(num_seasons)+1)):
 
 		title = 'Season %s' % (str(season))
@@ -38,7 +38,7 @@ def Episodes(title, season):
 
 	oc = ObjectContainer(title2=title)
 	html = HTML.ElementFromURL('%s/season-%s?sort=!airdate' % (GUIDE_URL, season))
-
+	
 	json_url = html.xpath('//section[@data-url]/@data-url')[0]
 	json_url = json_url.replace('{resultsPerPage}', '30')
 	json_url = json_url.replace('{currentPage}', '1')
